@@ -1,6 +1,16 @@
 import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema(
+export interface IUser {
+    name: string;
+    dob: Date;
+    email: string;
+    password: string;
+    role: 'patient' | 'doctor' | 'admin';
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+const userSchema = new mongoose.Schema<IUser>(
     {
         name: {
             type: String,

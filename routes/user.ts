@@ -47,31 +47,25 @@ router.post('/signup', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email, password });
-    if (!user) {
+    if (!user || !user.name || !user.email || !user.role) {
         res.status(401).send('Email or Password does not exists');
+    } else {
+        const token = jwt.sign(
+            {
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
+            //TODO put secret in env
+            'secret',
+            { expiresIn: '1d' }
+        );
+
+        res.json({
+            loggedIn: true,
+            token,
+        });
     }
-    console.log(user);
-
-    //TODO type cast user model
-    // @ts-ignore
-    const token = jwt.sign(
-        {
-            // @ts-ignore
-            name: user.name,
-            // @ts-ignore
-            email: user.email,
-            // @ts-ignore
-            role: user.role,
-        },
-        //TODO put secret in env
-        'secret',
-        { expiresIn: '1d' }
-    );
-
-    res.json({
-        loggedIn: true,
-        token,
-    });
 });
 
 export default router;
