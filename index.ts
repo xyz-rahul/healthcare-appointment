@@ -1,11 +1,11 @@
 import express from 'express';
-const app = express();
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+import db from './startup/db';
+import route from './startup/route';
 
-app.get('/hello-world', async (req, res) => {
-    res.send('req received');
-});
+const app = express();
+
+db();
+route(app);
 
 const PORT = process.env.PORT;
 if (!PORT) throw Error('Port for server is not provided');
